@@ -5,6 +5,8 @@
 
 #include <iostream>
 #include <fstream>
+#include <stdio.h>
+#include <stdlib.h>
 
 /**
  * @struct MatrixDims
@@ -24,7 +26,7 @@ private:
 public:
     Matrix(const int rows, const int cols);
     Matrix();
-    Matrix(Matrix &m);
+    Matrix(Matrix const &m);
     ~Matrix();
 
     int getRows() const;
@@ -32,14 +34,17 @@ public:
     Matrix& vectorize();
     void plainPrint() const;
 
-    Matrix& operator=(const Matrix& mat);
+    Matrix& operator=(Matrix const &mat);
     Matrix operator*(float scalar) const;
-    Matrix operator*(const Matrix& mat, const float scalar) const;
-    Matrix operator+(const float scalar) const;
+
+    Matrix operator+(Matrix const &mat) const;
     Matrix& operator+=(const Matrix& mat);
-    float& operator()(const int i, const int j) const;
-    float& operator[](const int i) const;
-    std::ifstream& operator>>(std::ifstream &in, Matrix &mat);
-    std::ostream& operator<<(std::ostream &out, const Matrix &mat);
+    float& operator()(int i, int j) const;
+    float& operator[](long int i) const;
+
 };
+
+Matrix operator*(float scalar, Matrix const &mat);
+void operator>>(std::ifstream &in, Matrix &mat);
+void operator<<(std::ostream &out, const Matrix &mat);
 #endif //MATRIX_H
