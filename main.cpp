@@ -152,7 +152,7 @@ void mlpCli(MlpNetwork &mlp)
 int main(int argc, char **argv)
 {
     if(argc != ARGS_COUNT)
-    {
+    {Matrix.h
         usage();
         exit(EXIT_FAILURE);
     }
