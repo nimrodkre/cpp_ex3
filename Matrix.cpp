@@ -6,6 +6,7 @@
 #define ERROR_USER_DIMENSIONS "Error: rows and cols must be positive integers"
 #define ERROR_FAILED_ADDITION "Error: unable to add matrixes as dimensions are different"
 #define ERROR_OUT_OF_RANGE "Error: out of range"
+#define ERROR_MATRIX_MULTIPLICATION "Error: can't multiply matrixes"
 #define ERROR_BAD_STREAM "Error: stream given is bad"
 #define THRESHOLD_PRINT 0.1
 
@@ -167,6 +168,27 @@ Matrix operator*(float scalar, Matrix const &mat)
     return mat*scalar;
 }
 
+Matrix Matrix::operator*(Matrix const &mat)
+{
+    if (this->getCols() != mat.getRows())
+    {
+        std::cerr << ERROR_MATRIX_MULTIPLICATION << std::endl;
+        exit(EXIT_FAILURE);
+    }
+    Matrix retMat(this->getRows(), mat.getCols());
+    for (int i  = 0; i < this->getRows(); i++)
+    {
+        for (int j = 0; j < mat.getCols(); j++)
+        {
+            for (int k = 0; k < this->getCols(); k++)
+            {
+                retMat(i, j) += (*this)(i, k) * mat(k, j);
+            }
+        }
+    }
+    return retMat;
+}
+
 // WHAT SHOULD I RETURN??????
 void operator>>(std::ifstream &in, Matrix &mat)
 {
@@ -183,7 +205,7 @@ void operator>>(std::ifstream &in, Matrix &mat)
     long int index = 0;
     in.seekg(0, std::ios_base::beg);
     // we know that the given file is in correct size
-    while (in.good() && index < expectedSize)
+    while (in.good())
     {
         in.read((char *) &mat[index], sizeof(float));
         index++;

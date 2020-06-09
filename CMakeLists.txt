@@ -3,4 +3,4 @@ project(cpp_ex3)
 
 set(CMAKE_CXX_STANDARD 17)
 
-add_executable(cpp_ex3 main.cpp Matrix.cpp)
+add_executable(cpp_ex3 main.cpp Matrix.cpp Activation.cpp Dense.cpp MlpNetwork.cpp)

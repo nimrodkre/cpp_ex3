@@ -36,7 +36,7 @@ public:
 
     Matrix& operator=(Matrix const &mat);
     Matrix operator*(float scalar) const;
-
+    Matrix operator*(Matrix const &mat);
     Matrix operator+(Matrix const &mat) const;
     Matrix& operator+=(const Matrix& mat);
     float& operator()(int i, int j) const;
