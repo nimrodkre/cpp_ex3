@@ -10,15 +10,15 @@
 class Dense
 {
 private:
-    Matrix _w;
-    Matrix _bias;
+    Matrix& _bias;
+    Matrix& _w;
     Activation _activation;
 public:
-    Dense(Matrix &w, Matrix &bias, ActivationType &activationType);
+    Dense(Matrix &w, Matrix &bias, ActivationType activationType);
     Matrix getWeights() const;
     Matrix getBias() const;
     Activation getActivation() const;
-    Matrix operator()(Matrix const &mat) const;
+    Matrix& operator()(Matrix &mat);
 };
 
 #endif //CPP_EX3_DENSE_H

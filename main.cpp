@@ -85,7 +85,7 @@ void loadParameters(char *paths[ARGS_COUNT], Matrix weights[MLP_SIZE], Matrix bi
         std::string biasPath(paths[BIAS_START_IDX + i]);
 
         if(!(readFileToMatrix(weightsPath, weights[i]) &&
-           readFileToMatrix(biasPath, biases[i])))
+             readFileToMatrix(biasPath, biases[i])))
         {
             std::cerr << ERROR_INAVLID_PARAMETER << (i + 1) << std::endl;
             exit(EXIT_FAILURE);
@@ -152,7 +152,7 @@ void mlpCli(MlpNetwork &mlp)
 int main(int argc, char **argv)
 {
     if(argc != ARGS_COUNT)
-    {Matrix.h
+    {
         usage();
         exit(EXIT_FAILURE);
     }

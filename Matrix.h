@@ -5,8 +5,6 @@
 
 #include <iostream>
 #include <fstream>
-#include <stdio.h>
-#include <stdlib.h>
 
 /**
  * @struct MatrixDims
@@ -24,7 +22,7 @@ private:
     MatrixDims _matDims;
     float *_values;
 public:
-    Matrix(const int rows, const int cols);
+    Matrix(int rows, int cols);
     Matrix();
     Matrix(Matrix const &m);
     ~Matrix();
@@ -45,6 +43,6 @@ public:
 };
 
 Matrix operator*(float scalar, Matrix const &mat);
-void operator>>(std::ifstream &in, Matrix &mat);
-void operator<<(std::ostream &out, const Matrix &mat);
+std::ifstream& operator>>(std::ifstream &in, Matrix &mat);
+std::ostream& operator<<(std::ostream &out, const Matrix &mat);
 #endif //MATRIX_H

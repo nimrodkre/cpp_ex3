@@ -1,6 +1,7 @@
 //
 // Created by User on 08/06/2020.
 //
+#include <cstring>
 #include "Matrix.h"
 
 #define ERROR_USER_DIMENSIONS "Error: rows and cols must be positive integers"
@@ -18,23 +19,28 @@ Matrix::Matrix()
     this->_values[0] = 0;
 }
 
-Matrix::Matrix(const int rows, const int cols)
+Matrix::Matrix(int rows, int cols)
 {
     if (rows < 1 || cols < 1)
     {
         std::cerr << ERROR_USER_DIMENSIONS << std::endl;
         exit(EXIT_FAILURE);
     }
+    _values = new float[rows * cols]();
+    std::memset(_values, 0, rows * cols);
+    _matDims.rows = rows;
+    _matDims.cols = cols;
+    /**
     this->_matDims.rows = rows;
     this->_matDims.cols = cols;
-    this->_values = new float[rows * cols];
+    this->_values = new float[rows * cols]();
     for (int i = 0; i < rows; i++)
     {
         for (int j = 0; j < cols; j++)
         {
-            this->_values[cols * i + cols] = 0;
+            (*this)(i, j) = 0;
         }
-    }
+    }*/
 }
 
 Matrix::Matrix(Matrix const &m)
@@ -46,8 +52,8 @@ Matrix::Matrix(Matrix const &m)
     {
         for (int j = 0; j < this->getCols(); j++)
         {
-            this->_values[this->getCols() * i + this->getCols()] = m._values[this->getCols() * i +
-                                                                                     this->getCols()];
+            this->_values[this->getCols() * i + j] = m._values[this->getCols() * i +
+                                                                                     j];
         }
     }
 }
@@ -100,8 +106,9 @@ Matrix& Matrix::operator=(Matrix const &mat)
     {
         for (int j = 0; j < this->getCols(); j++)
         {
-            this->_values[this->getCols() * i + this->getCols()] = mat._values[this->getCols() * i +
-                                                                                     this->getCols()];
+            // changed here
+            this->_values[this->getCols() * i + j] = mat._values[this->getCols() * i +
+                                                                                     j];
         }
     }
     return *this;
@@ -111,7 +118,7 @@ Matrix Matrix::operator*(const float scalar) const
     Matrix mat(this->getRows(), this->getCols());
     for (int i = 0; i < this->getRows(); i++)
     {
-        for(int j = 0; j < this->getCols(); i++)
+        for(int j = 0; j < this->getCols(); j++)
         {
             mat(i, j) = (*this)(i, j) * scalar;
         }
@@ -151,12 +158,13 @@ float& Matrix::operator()(int i, int j) const
         std::cerr << ERROR_OUT_OF_RANGE << std::endl;
         exit(EXIT_FAILURE);
     }
-    return this->_values[i * this->getCols() + j];
+    return this->_values[(i * this->getCols()) + j];
 }
 float& Matrix::operator[](long int i) const
 {
-    if (i < 0 || i >= this->getCols() * this->getRows())
+    if (i < 0 || i >= (this->getCols() * this->getRows()))
     {
+        std::cout << i << " " << (this->getCols() * this->getRows());
         std::cerr << ERROR_OUT_OF_RANGE << std::endl;
         exit(EXIT_FAILURE);
     }
@@ -190,13 +198,13 @@ Matrix Matrix::operator*(Matrix const &mat)
 }
 
 // WHAT SHOULD I RETURN??????
-void operator>>(std::ifstream &in, Matrix &mat)
+std::ifstream& operator>>(std::ifstream &in, Matrix &mat)
 {
     long int expectedSize = mat.getCols() * mat.getRows();
 
     //check the size of the ifstream
     in.seekg(0, std::ios_base::end);
-    if (in.tellg() != expectedSize * sizeof(float))
+    if ((long unsigned int)in.tellg() != expectedSize * sizeof(float))
     {
         std::cerr << ERROR_BAD_STREAM << std::endl;
         exit(EXIT_FAILURE);
@@ -205,20 +213,21 @@ void operator>>(std::ifstream &in, Matrix &mat)
     long int index = 0;
     in.seekg(0, std::ios_base::beg);
     // we know that the given file is in correct size
-    while (in.good())
+    while (in.good() && index < mat.getCols() * mat.getRows())
     {
         in.read((char *) &mat[index], sizeof(float));
         index++;
     }
-    if (!in.good() || index != expectedSize - 1)
+    if (!in.good())
     {
         std::cerr << ERROR_BAD_STREAM << std::endl;
         exit(EXIT_FAILURE);
     }
+    return in;
 }
 
 //RETURN?
-void operator<<(std::ostream &out, const Matrix &mat)
+std::ostream& operator<<(std::ostream &out, const Matrix &mat)
 {
     for (int i = 0; i < mat.getRows(); i++)
     {
@@ -235,5 +244,5 @@ void operator<<(std::ostream &out, const Matrix &mat)
         }
         out << std::endl;
     }
-
+    return out;
 }

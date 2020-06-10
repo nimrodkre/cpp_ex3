@@ -17,13 +17,13 @@ const MatrixDims biasDims[]    = {{128, 1}, {64, 1}, {20, 1},  {10, 1}};
 class MlpNetwork
 {
 private:
-    bool _assert_good_matrix(Matrix const &mat) const;
     Dense _stage1;
     Dense _stage2;
     Dense _stage3;
     Dense _stage4;
+    Digit _getMaxProbability(Matrix &final);
 public:
-    MlpNetwork(Matrix weights [], Matrix biases[]);
+    MlpNetwork(Matrix weights [MLP_SIZE], Matrix biases[MLP_SIZE]);
     Digit operator()(Matrix &mat);
 };
 

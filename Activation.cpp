@@ -23,11 +23,11 @@ Matrix Activation::operator()(const Matrix &mat) const
         std::cerr << ERROR_BAD_MATRIX << std::endl;
         exit(EXIT_FAILURE);
     }
-    if (this->getActivationType() == Relu)
+    if (this->getActivationType() == Softmax)
     {
-        return this->_relu(mat);
+        return this->_softmax(mat);
     }
-    return this->_softmax(mat);
+    return this->_relu(mat);
 }
 
 Matrix Activation::_relu(Matrix const &mat) const
@@ -35,12 +35,9 @@ Matrix Activation::_relu(Matrix const &mat) const
     Matrix reluMax(mat);
     for (int i = 0; i < reluMax.getRows(); i++)
     {
-        for (int j = 0; j < reluMax.getCols(); j++)
+        if (reluMax[i] < 0)
         {
-            if (reluMax(i, j) < 0)
-            {
-                reluMax(i, j) = 0;
-            }
+            reluMax[i] = 0;
         }
     }
     return reluMax;
@@ -56,8 +53,7 @@ Matrix Activation::_softmax(Matrix const &mat) const
         softMax[i] = std::exp(softMax[i]);
         sum += softMax[i];
     }
-
-    return (1 / sum) * softMax;
+    return softMax * (1/sum);
 }
 
 
