@@ -32,6 +32,12 @@ Matrix Activation::operator()(const Matrix &mat) const
 
 Matrix Activation::_relu_activate(const Matrix &mat) const
 {
+    if (mat.getCols() != 1)
+    {
+        std::cerr << ERROR_BAD_MATRIX << std::endl;
+        exit(EXIT_FAILURE);
+    }
+
     Matrix reluMax(mat);
     for (int i = 0; i < reluMax.getRows(); i++)
     {
@@ -45,13 +51,19 @@ Matrix Activation::_relu_activate(const Matrix &mat) const
 
 Matrix Activation::_softMax_activate(const Matrix &mat) const
 {
+    if (mat.getCols() != 1)
+    {
+        std::cerr << ERROR_BAD_MATRIX << std::endl;
+        exit(EXIT_FAILURE);
+    }
+
     Matrix softMax(mat);
     float sum = 0;
 
     for (int i = 0; i < softMax.getRows(); i++)
     {
+        sum += std::exp(softMax[i]);
         softMax[i] = std::exp(softMax[i]);
-        sum += softMax[i];
     }
     return softMax * (1/sum);
 }
