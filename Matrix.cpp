@@ -1,7 +1,6 @@
 //
 // Created by User on 08/06/2020.
 //
-#include <cstring>
 #include "Matrix.h"
 
 #define ERROR_USER_DIMENSIONS "Error: rows and cols must be positive integers"
@@ -13,8 +12,8 @@
 
 Matrix::Matrix()
 {
-    this->_matDims.rows = 1;
-    this->_matDims.cols = 1;
+    this->_matrixDims.rows = 1;
+    this->_matrixDims.cols = 1;
     this->_values = new float[1];
     (*this)(0, 0) = 0;
 }
@@ -26,12 +25,10 @@ Matrix::Matrix(int rows, int cols)
         std::cerr << ERROR_USER_DIMENSIONS << std::endl;
         exit(EXIT_FAILURE);
     }
-    _values = new float[rows * cols];
-    _matDims.rows = rows;
-    _matDims.cols = cols;
-    this->_matDims.rows = rows;
-    this->_matDims.cols = cols;
-    this->_values = new float[rows * cols]();
+
+    this->_matrixDims.rows = rows;
+    this->_matrixDims.cols = cols;
+    this->_values = new float[rows * cols];
     for (int i = 0; i < rows; i++)
     {
         for (int j = 0; j < cols; j++)
@@ -43,8 +40,8 @@ Matrix::Matrix(int rows, int cols)
 
 Matrix::Matrix(const Matrix &m)
 {
-    this->_matDims.rows = m.getRows();
-    this->_matDims.cols = m.getCols();
+    this->_matrixDims.rows = m.getRows();
+    this->_matrixDims.cols = m.getCols();
     this->_values = new float[this->getRows() * this->getCols()];
     for (int i = 0; i < this->getRows(); i++)
     {
@@ -63,18 +60,18 @@ Matrix::~Matrix()
 
 int Matrix::getRows() const
 {
-    return this->_matDims.rows;
+    return this->_matrixDims.rows;
 }
 
 int Matrix::getCols() const
 {
-    return this->_matDims.cols;
+    return this->_matrixDims.cols;
 }
 
 Matrix &Matrix::vectorize()
 {
-    this->_matDims.rows *= this->getCols();
-    this->_matDims.cols = 1;
+    this->_matrixDims.rows *= this->getCols();
+    this->_matrixDims.cols = 1;
     return *this;
 }
 
@@ -97,14 +94,13 @@ Matrix& Matrix::operator=(Matrix const &mat)
         return *this;
     }
     delete[] this->_values;
-    this->_matDims.rows = mat.getRows();
-    this->_matDims.cols = mat.getCols();
+    this->_matrixDims.rows = mat.getRows();
+    this->_matrixDims.cols = mat.getCols();
     this->_values = new float[mat.getRows() * mat.getCols()];
     for (int i = 0; i < this->getRows(); i++)
     {
         for (int j = 0; j < this->getCols(); j++)
         {
-            // changed here
             this->_values[this->getCols() * i + j] = mat._values[this->getCols() * i +
                                                                                      j];
         }
@@ -113,12 +109,12 @@ Matrix& Matrix::operator=(Matrix const &mat)
 }
 Matrix Matrix::operator*(const float scalar) const
 {
-    Matrix mat(this->getRows(), this->getCols());
+    Matrix mat(*this);
     for (int i = 0; i < this->getRows(); i++)
     {
         for(int j = 0; j < this->getCols(); j++)
         {
-            mat(i, j) = (*this)(i, j) * scalar;
+            mat(i, j) *= scalar;
         }
     }
     return mat;
@@ -131,7 +127,7 @@ Matrix Matrix::operator+(Matrix const &mat) const
     return retMat;
 }
 
-Matrix& Matrix::operator+=(const Matrix& mat)
+Matrix Matrix::operator+=(const Matrix& mat)
 {
     if (this->getRows() != mat.getRows() || this->getCols() != mat.getCols())
     {
@@ -194,26 +190,31 @@ Matrix Matrix::operator*(Matrix const &mat)
     return retMat;
 }
 
-// WHAT SHOULD I RETURN??????
 std::ifstream& operator>>(std::ifstream &in, Matrix &mat)
 {
     in.seekg(0, std::ios_base::beg);
     long int start = in.tellg();
-    //check the size of the ifstream
     in.seekg(0, std::ios_base::end);
     if ((long unsigned int)(in.tellg() - start) != mat.getCols() * mat.getRows() * sizeof(float))
     {
         std::cerr << ERROR_BAD_STREAM << std::endl;
         exit(EXIT_FAILURE);
     }
+
     in.seekg(0, std::ios_base::beg);
-    long unsigned int index = 0;
-    // we know that the given file is in correct size
-    while (index < (long unsigned int)mat.getCols() * mat.getRows() && in.good())
+    int index = 0;
+    while (index < (int)mat.getCols() * mat.getRows())
     {
+        if (!in.good())
+        {
+            std::cerr << ERROR_BAD_STREAM << std::endl;
+            exit(EXIT_FAILURE);
+        }
         in.read((char *) &mat[index], sizeof(float));
         index++;
     }
+
+    //maybe ruined at end?
     if (!in.good())
     {
         std::cerr << ERROR_BAD_STREAM << std::endl;
@@ -222,7 +223,6 @@ std::ifstream& operator>>(std::ifstream &in, Matrix &mat)
     return in;
 }
 
-//RETURN?
 std::ostream& operator<<(std::ostream &out, const Matrix &mat)
 {
     for (int i = 0; i < mat.getRows(); i++)

@@ -2,7 +2,7 @@
 // Created by User on 09/06/2020.
 //
 #include "activation.h"
-#include <math.h>
+#include <cmath>
 
 #define ERROR_BAD_MATRIX "Error: given matrix must have one collumn only"
 

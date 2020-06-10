@@ -9,32 +9,40 @@
 
 #define ALLOWED_COLUMNS 1
 
-MlpNetwork::MlpNetwork(Matrix weights[MLP_SIZE], Matrix biases[MLP_SIZE]) : _stage1(weights[0], biases[0], Relu),
-                                                                            _stage2(weights[1], biases[1], Relu),
-                                                                            _stage3(weights[2], biases[2], Relu),
-                                                                            _stage4(weights[3], biases[3], Softmax)
+MlpNetwork::MlpNetwork(Matrix weights[MLP_SIZE], Matrix biases[MLP_SIZE]) : _stage1(weights[0], biases[0],
+                                                                                    Relu),
+                                                                            _stage2(weights[1], biases[1],
+                                                                                    Relu),
+                                                                            _stage3(weights[2], biases[2],
+                                                                                    Relu),
+                                                                            _stage4(weights[3], biases[3],
+                                                                                    Softmax)
 {
-    bool good = weights[0].getRows() == weightsDims[0].rows &&
-                weights[0].getCols() == weightsDims[0].cols &&
-                weights[1].getRows() == weightsDims[1].rows &&
-                weights[1].getCols() == weightsDims[1].cols &&
-                weights[2].getRows() == weightsDims[2].rows &&
-                weights[2].getCols() == weightsDims[2].cols &&
-                weights[3].getRows() == weightsDims[3].rows &&
-                weights[3].getCols() == weightsDims[3].cols &&
-                biases[0].getRows() == biasDims[0].rows &&
-                biases[0].getCols() == biasDims[0].cols &&
-                biases[1].getRows() == biasDims[1].rows &&
-                biases[1].getCols() == biasDims[1].cols &&
-                biases[2].getRows() == biasDims[2].rows &&
-                biases[2].getCols() == biasDims[2].cols &&
-                biases[3].getRows() == biasDims[3].rows &&
-                biases[3].getCols() == biasDims[3].cols;
-    if (!good)
+    if (!_check_densities(weights, biases))
     {
         std::cerr << ERROR_GIVEN_ARGUMENTS << std::endl;
         exit(EXIT_FAILURE);
     }
+}
+
+bool MlpNetwork::_check_densities(const Matrix weights[MLP_SIZE], const Matrix biases[MLP_SIZE]) const
+{
+    return weights[0].getRows() == weightsDims[0].rows &&
+    weights[0].getCols() == weightsDims[0].cols &&
+    weights[1].getRows() == weightsDims[1].rows &&
+    weights[1].getCols() == weightsDims[1].cols &&
+    weights[2].getRows() == weightsDims[2].rows &&
+    weights[2].getCols() == weightsDims[2].cols &&
+    weights[3].getRows() == weightsDims[3].rows &&
+    weights[3].getCols() == weightsDims[3].cols &&
+    biases[0].getRows() == biasDims[0].rows &&
+    biases[0].getCols() == biasDims[0].cols &&
+    biases[1].getRows() == biasDims[1].rows &&
+    biases[1].getCols() == biasDims[1].cols &&
+    biases[2].getRows() == biasDims[2].rows &&
+    biases[2].getCols() == biasDims[2].cols &&
+    biases[3].getRows() == biasDims[3].rows &&
+    biases[3].getCols() == biasDims[3].cols;
 }
 
 Digit MlpNetwork::operator()(Matrix &mat)
@@ -64,7 +72,6 @@ Digit MlpNetwork::_getMaxProbability(Matrix &final)
     int max = 0;
     for (int i = 0; i < final.getRows(); i++)
     {
-        std::cout << "calc" << i << " " << final[i] << std::endl;
         if (final[i] > final[max])
         {
             max = i;
