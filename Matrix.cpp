@@ -231,11 +231,11 @@ std::ostream& operator<<(std::ostream &out, const Matrix &mat)
         {
             if (mat(i, j) <= THRESHOLD_PRINT)
             {
-                out << "**";
+                out << "  ";
             }
             else
             {
-                out << "  ";
+                out << "**";
             }
         }
         out << std::endl;

@@ -1,7 +1,7 @@
 //
 // Created by User on 09/06/2020.
 //
-#include "Activation.h"
+#include "activation.h"
 #include <math.h>
 
 #define ERROR_BAD_MATRIX "Error: given matrix must have one collumn only"
@@ -25,12 +25,12 @@ Matrix Activation::operator()(const Matrix &mat) const
     }
     if (this->getActivationType() == Softmax)
     {
-        return this->_softmax(mat);
+        return this->_softMax_activate(mat);
     }
-    return this->_relu(mat);
+    return this->_relu_activate(mat);
 }
 
-Matrix Activation::_relu(Matrix const &mat) const
+Matrix Activation::_relu_activate(const Matrix &mat) const
 {
     Matrix reluMax(mat);
     for (int i = 0; i < reluMax.getRows(); i++)
@@ -43,7 +43,7 @@ Matrix Activation::_relu(Matrix const &mat) const
     return reluMax;
 }
 
-Matrix Activation::_softmax(Matrix const &mat) const
+Matrix Activation::_softMax_activate(const Matrix &mat) const
 {
     Matrix softMax(mat);
     float sum = 0;
