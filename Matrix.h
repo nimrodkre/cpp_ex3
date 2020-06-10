@@ -57,7 +57,7 @@ public:
      */
     int getRows() const;
     /**
-     * gets the number of rows in the matrix
+     * gets the number of cols in the matrix
      * @return
      */
     int getCols() const;

@@ -29,13 +29,13 @@ private:
      * @param mat the matrix on which to run the algorithm
      * @return the matrix after the algorithm
      */
-    Matrix _relu_activate(const Matrix  &mat) const;
+    Matrix _reluActivate(const Matrix  &mat) const;
     /**
      * private function to run the soft max algorirthm
      * @param mat the matrix on which to run the algorithm
      * @return the matrix after the algorithm
      */
-    Matrix _softMax_activate(const Matrix &mat) const;
+    Matrix _softMaxActivate(const Matrix &mat) const;
 public:
     /**
      * constructor for activation

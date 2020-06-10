@@ -6,16 +6,27 @@
 
 #define ERROR_BAD_MATRIX "Error: given matrix must have one collumn only"
 
+/**
+ * constructor for activation
+ * @param actType the type of activation
+ */
 Activation::Activation(ActivationType actType)
 {
     this->_activationType = actType;
 }
-
+/**
+ * gets the type of activation
+ * @return ActivationType
+ */
 ActivationType Activation::getActivationType() const
 {
     return this->_activationType;
 }
-
+/**
+ * runs the activation functions according to the
+ * @param mat the matrix on which to run
+ * @return the matrix after the operation
+ */
 Matrix Activation::operator()(const Matrix &mat) const
 {
     if (mat.getCols() != 1)
@@ -25,12 +36,16 @@ Matrix Activation::operator()(const Matrix &mat) const
     }
     if (this->getActivationType() == Softmax)
     {
-        return this->_softMax_activate(mat);
+        return this->_softMaxActivate(mat);
     }
-    return this->_relu_activate(mat);
+    return this->_reluActivate(mat);
 }
-
-Matrix Activation::_relu_activate(const Matrix &mat) const
+/**
+ * private function to run the relu algorirthm
+ * @param mat the matrix on which to run the algorithm
+ * @return the matrix after the algorithm
+ */
+Matrix Activation::_reluActivate(const Matrix &mat) const
 {
     if (mat.getCols() != 1)
     {
@@ -48,8 +63,12 @@ Matrix Activation::_relu_activate(const Matrix &mat) const
     }
     return reluMax;
 }
-
-Matrix Activation::_softMax_activate(const Matrix &mat) const
+/**
+ * private function to run the soft max algorirthm
+ * @param mat the matrix on which to run the algorithm
+ * @return the matrix after the algorithm
+ */
+Matrix Activation::_softMaxActivate(const Matrix &mat) const
 {
     if (mat.getCols() != 1)
     {

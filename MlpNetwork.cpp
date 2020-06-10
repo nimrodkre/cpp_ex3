@@ -9,6 +9,11 @@
 
 #define ALLOWED_COLUMNS 1
 
+/**
+ * constructor for the network
+ * @param weights weights
+ * @param biases biases
+ */
 MlpNetwork::MlpNetwork(Matrix weights[MLP_SIZE], Matrix biases[MLP_SIZE]) : _stage1(weights[0], biases[0],
                                                                                     Relu),
                                                                             _stage2(weights[1], biases[1],
@@ -18,14 +23,19 @@ MlpNetwork::MlpNetwork(Matrix weights[MLP_SIZE], Matrix biases[MLP_SIZE]) : _sta
                                                                             _stage4(weights[3], biases[3],
                                                                                     Softmax)
 {
-    if (!_check_densities(weights, biases))
+    if (!_checkDensities(weights, biases))
     {
         std::cerr << ERROR_GIVEN_ARGUMENTS << std::endl;
         exit(EXIT_FAILURE);
     }
 }
-
-bool MlpNetwork::_check_densities(const Matrix weights[MLP_SIZE], const Matrix biases[MLP_SIZE]) const
+/**
+ * checks that the given user inputs are good - according to the constants
+ * @param weights the weights
+ * @param biases biases
+ * @return true if good else false
+ */
+bool MlpNetwork::_checkDensities(const Matrix weights[MLP_SIZE], const Matrix biases[MLP_SIZE]) const
 {
     return weights[0].getRows() == weightsDims[0].rows &&
     weights[0].getCols() == weightsDims[0].cols &&
@@ -44,7 +54,11 @@ bool MlpNetwork::_check_densities(const Matrix weights[MLP_SIZE], const Matrix b
     biases[3].getRows() == biasDims[3].rows &&
     biases[3].getCols() == biasDims[3].cols;
 }
-
+/**
+ * applies the network on the given vector
+ * @param mat out image
+ * @return digit with the number we saw
+ */
 Digit MlpNetwork::operator()(Matrix &mat)
 {
     if (mat.getCols() != ALLOWED_COLUMNS)
@@ -66,7 +80,11 @@ Digit MlpNetwork::operator()(Matrix &mat)
     Matrix last = this->_stage4(third);
     return this->_getMaxProbability(last);
 }
-
+/**
+ * finds the maximum probaibiliy in the given vector
+ * @param final the final vector
+ * @return  the digit of the best probability
+ */
 Digit MlpNetwork::_getMaxProbability(Matrix &final)
 {
     int max = 0;

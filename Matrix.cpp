@@ -9,7 +9,9 @@
 #define ERROR_MATRIX_MULTIPLICATION "Error: can't multiply matrixes"
 #define ERROR_BAD_STREAM "Error: stream given is bad"
 #define THRESHOLD_PRINT 0.1
-
+/**
+ * defualt constructor with 1 row and 1 column with 0
+ */
 Matrix::Matrix()
 {
     this->_matrixDims.rows = 1;
@@ -17,7 +19,12 @@ Matrix::Matrix()
     this->_values = new float[1];
     (*this)(0, 0) = 0;
 }
-
+/**
+ * constructor which builds matrix with rows and columns
+ * with all numbers 0
+ * @param rows the number of rows
+ * @param cols the number of colmuns
+ */
 Matrix::Matrix(int rows, int cols)
 {
     if (rows < 1 || cols < 1)
@@ -37,7 +44,10 @@ Matrix::Matrix(int rows, int cols)
         }
     }
 }
-
+/**
+ * constructor which recieves matrix as input
+ * @param m the matrix to copy from
+ */
 Matrix::Matrix(const Matrix &m)
 {
     this->_matrixDims.rows = m.getRows();
@@ -52,41 +62,58 @@ Matrix::Matrix(const Matrix &m)
         }
     }
 }
-
+/**
+ * destructor of the matrix
+ */
 Matrix::~Matrix()
 {
     delete[] this->_values;
 }
-
+/**
+ * gets the number of rows in the matrix
+ * @return
+ */
 int Matrix::getRows() const
 {
     return this->_matrixDims.rows;
 }
-
+/**
+ * gets the number of cols in the matrix
+ * @return
+ */
 int Matrix::getCols() const
 {
     return this->_matrixDims.cols;
 }
-
+/**
+ * turns the matrix to a vector
+ * @return
+ */
 Matrix &Matrix::vectorize()
 {
     this->_matrixDims.rows *= this->getCols();
     this->_matrixDims.cols = 1;
     return *this;
 }
-
+/**
+ * prints the matrix
+ */
 void Matrix::plainPrint() const
 {
     for (int i = 0; i < this->getRows(); i++)
     {
         for (int j = 0; j < this->getCols(); j++)
         {
-            std::cout << this->_values[i * this->getCols()+ j] << " ";
+            std::cout << this->_values[i * this->getCols() + j] << " ";
         }
         std::cout << std::endl;
     }
 }
-
+/**
+ * copies the given matrix to our matrix
+ * @param mat the matrix to copy
+ * @return matrix reference to this
+ */
 Matrix& Matrix::operator=(Matrix const &mat)
 {
     if (this == &mat)
@@ -107,6 +134,11 @@ Matrix& Matrix::operator=(Matrix const &mat)
     }
     return *this;
 }
+/**
+ * multiply the matrix by scalar
+ * @param scalar the float to multiply by
+ * @return the matrix multiplied
+ */
 Matrix Matrix::operator*(const float scalar) const
 {
     Matrix mat(*this);
@@ -119,14 +151,22 @@ Matrix Matrix::operator*(const float scalar) const
     }
     return mat;
 }
-
+/**
+ * add matrixes
+ * @param mat the matrix to add
+ * @return added matrixes
+ */
 Matrix Matrix::operator+(Matrix const &mat) const
 {
     Matrix retMat = *this;
     retMat += mat;
     return retMat;
 }
-
+/**
+ * adds matrix to our matrix
+ * @param mat the matrix to add
+ * @return new matrix
+ */
 Matrix Matrix::operator+=(const Matrix& mat)
 {
     if (this->getRows() != mat.getRows() || this->getCols() != mat.getCols())
@@ -145,6 +185,12 @@ Matrix Matrix::operator+=(const Matrix& mat)
 
     return *this;
 }
+/**
+ * gets the float value in given location
+ * @param i rows
+ * @param j column
+ * @return ref to float of value
+ */
 float& Matrix::operator()(int i, int j) const
 {
     if (i < 0 || j < 0 || i >= this->getRows() || j >= this->getCols())
@@ -154,6 +200,11 @@ float& Matrix::operator()(int i, int j) const
     }
     return this->_values[i * this->getCols() + j];
 }
+/**
+ * gets the float value to the given location
+ * @param i location to get
+ * @return ref to float
+ */
 float& Matrix::operator[](long int i) const
 {
     if (i < 0 || i >= (this->getCols() * this->getRows()))
@@ -163,12 +214,21 @@ float& Matrix::operator[](long int i) const
     }
     return this->_values[i];
 }
-
+/**
+ * multiplies matrix by scalar
+ * @param scalar the float to multiply by
+ * @return multiplied matrix
+ */
 Matrix operator*(float scalar, Matrix const &mat)
 {
     return mat*scalar;
 }
-
+/**
+ * multiplies matrix by scalar
+ * @param scalar the float to multiply by
+ * @param our matrix
+ * @return multiplied matrix
+ */
 Matrix Matrix::operator*(Matrix const &mat)
 {
     if (this->getCols() != mat.getRows())
@@ -189,7 +249,12 @@ Matrix Matrix::operator*(Matrix const &mat)
     }
     return retMat;
 }
-
+/**
+ * reads the file data
+ * @param in the file to read from
+ * @param mat the matrix to read data to
+ * @return the file data
+ */
 std::ifstream& operator>>(std::ifstream &in, Matrix &mat)
 {
     in.seekg(0, std::ios_base::beg);
@@ -222,7 +287,12 @@ std::ifstream& operator>>(std::ifstream &in, Matrix &mat)
     }
     return in;
 }
-
+/**
+ * output of matrix
+ * @param out the output stream
+ * @param mat the matrix to build stream of
+ * @return output stream
+ */
 std::ostream& operator<<(std::ostream &out, const Matrix &mat)
 {
     for (int i = 0; i < mat.getRows(); i++)

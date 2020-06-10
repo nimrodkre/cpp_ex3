@@ -47,7 +47,7 @@ private:
      * @param biases biases
      * @return true if good else false
      */
-    bool _check_densities(const Matrix weights[MLP_SIZE], const Matrix biases[MLP_SIZE]) const;
+    bool _checkDensities(const Matrix weights[MLP_SIZE], const Matrix biases[MLP_SIZE]) const;
 public:
     /**
      * constructor for the network
