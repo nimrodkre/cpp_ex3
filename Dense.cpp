@@ -31,7 +31,7 @@ Activation Dense::getActivation() const
 
 Matrix& Dense::operator()(Matrix &mat)
 {
-    mat = this->getActivation()(mat);
+    mat = this->getActivation()(_w * mat + _bias);
     return mat;
 }
 

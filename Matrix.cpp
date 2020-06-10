@@ -16,7 +16,7 @@ Matrix::Matrix()
     this->_matDims.rows = 1;
     this->_matDims.cols = 1;
     this->_values = new float[1];
-    this->_values[0] = 0;
+    (*this)(0, 0) = 0;
 }
 
 Matrix::Matrix(int rows, int cols)
@@ -26,11 +26,9 @@ Matrix::Matrix(int rows, int cols)
         std::cerr << ERROR_USER_DIMENSIONS << std::endl;
         exit(EXIT_FAILURE);
     }
-    _values = new float[rows * cols]();
-    std::memset(_values, 0, rows * cols);
+    _values = new float[rows * cols];
     _matDims.rows = rows;
     _matDims.cols = cols;
-    /**
     this->_matDims.rows = rows;
     this->_matDims.cols = cols;
     this->_values = new float[rows * cols]();
@@ -40,10 +38,10 @@ Matrix::Matrix(int rows, int cols)
         {
             (*this)(i, j) = 0;
         }
-    }*/
+    }
 }
 
-Matrix::Matrix(Matrix const &m)
+Matrix::Matrix(const Matrix &m)
 {
     this->_matDims.rows = m.getRows();
     this->_matDims.cols = m.getCols();
@@ -158,13 +156,12 @@ float& Matrix::operator()(int i, int j) const
         std::cerr << ERROR_OUT_OF_RANGE << std::endl;
         exit(EXIT_FAILURE);
     }
-    return this->_values[(i * this->getCols()) + j];
+    return this->_values[i * this->getCols() + j];
 }
 float& Matrix::operator[](long int i) const
 {
     if (i < 0 || i >= (this->getCols() * this->getRows()))
     {
-        std::cout << i << " " << (this->getCols() * this->getRows());
         std::cerr << ERROR_OUT_OF_RANGE << std::endl;
         exit(EXIT_FAILURE);
     }
@@ -200,20 +197,19 @@ Matrix Matrix::operator*(Matrix const &mat)
 // WHAT SHOULD I RETURN??????
 std::ifstream& operator>>(std::ifstream &in, Matrix &mat)
 {
-    long int expectedSize = mat.getCols() * mat.getRows();
-
+    in.seekg(0, std::ios_base::beg);
+    long int start = in.tellg();
     //check the size of the ifstream
     in.seekg(0, std::ios_base::end);
-    if ((long unsigned int)in.tellg() != expectedSize * sizeof(float))
+    if ((long unsigned int)(in.tellg() - start) != mat.getCols() * mat.getRows() * sizeof(float))
     {
         std::cerr << ERROR_BAD_STREAM << std::endl;
         exit(EXIT_FAILURE);
     }
-
-    long int index = 0;
     in.seekg(0, std::ios_base::beg);
+    long unsigned int index = 0;
     // we know that the given file is in correct size
-    while (in.good() && index < mat.getCols() * mat.getRows())
+    while (index < (long unsigned int)mat.getCols() * mat.getRows() && in.good())
     {
         in.read((char *) &mat[index], sizeof(float));
         index++;

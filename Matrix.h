@@ -24,7 +24,7 @@ private:
 public:
     Matrix(int rows, int cols);
     Matrix();
-    Matrix(Matrix const &m);
+    Matrix(const Matrix &m);
     ~Matrix();
 
     int getRows() const;
